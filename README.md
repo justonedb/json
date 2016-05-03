@@ -7,8 +7,8 @@ Fast parser for streaming JSON messages.
 ## Overview
 
 This package is for use in parsing streamed JSON messages which contain some expected
-structure. A single parser instance is able to parse multiple messages and the navigation path 
-to reach an element of interest need only be defined once prior to parsing any messages.
+structure. A single parser instance is able to parse multiple messages and the navigation paths 
+to reach elements of interest need only be defined once prior to parsing any messages.
 
 Methods are also provided for the run-time exploration of the message structure after it has been parsed. 
 
