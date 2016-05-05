@@ -67,6 +67,10 @@ to the elements 1 and 2 respectively. For a JSON message of {"a":[1,2,3]} the st
 
 None
 
+## Support
+
+Email support@justonedb.com for support.
+
 ## Author
 
 Duncan Pauly
