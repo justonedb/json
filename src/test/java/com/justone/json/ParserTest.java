@@ -70,7 +70,17 @@ public class ParserTest extends TestCase {
     instance.parse("[null,false,1,1.0,\"string\"]");
     
     instance.parse("[{\"a\":null},{\"a\":null}]");
-        
+    
+    instance.parse("{\"a\":\"\\\\\"}");// backsslash escape
+    instance.parse("{\"a\":\"\\\"\"}");// quote escape
+    instance.parse("{\"a\":\"\\/\"}");// solidus escape
+    instance.parse("{\"a\":\"\\b\"}");// backspace escape
+    instance.parse("{\"a\":\"\\f\"}");// form feed escape
+    instance.parse("{\"a\":\"\\n\"}");// newline escape
+    instance.parse("{\"a\":\"\\r\"}");// carriage return escape
+    instance.parse("{\"a\":\"\\t\"}");// tab escape
+    instance.parse("{\"a\":\"\\u0000\"}");// hexadecimal escape
+
   }//testParse()
 
   /**
