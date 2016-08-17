@@ -324,7 +324,7 @@ public class Parser {
    * Parses a string from the message
    * @return string parsed
    */
-  private String parseString () {
+    private String parseString () {
     
     assert iMessage!=null;
     assert iIndex>=0;
@@ -337,19 +337,18 @@ public class Parser {
     chr=next();//get next character
     if (chr=='"') return "";//return empty string if closing quote
     while (chr!='"') {//until closing quote reached
-      fBuffer.append(chr);//append character to the string
-      chr=next();//get the next character
       if (chr==NONE) throw new RuntimeException("Invalid syntax : "+context());//Awwww....
       if (chr=='\\') {//if escape character
         fBuffer.append('\\');//append escape character
-        fBuffer.append(next());//append next character
         chr=next();//get next character
       }//if escape character
+      fBuffer.append(chr);//append character to the string
+      chr=next();//get the next character
     }//until closing quote reached 
     
     return fBuffer.toString();//return string in buffer
     
-  }//parseString() 
+  }//parseString()
 
   /**
    * Parses a number from the message
