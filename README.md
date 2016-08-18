@@ -75,3 +75,7 @@ Email support@justonedb.com for support.
 
 Duncan Pauly
 
+## Release Notes
+
+### Version 1.0.1
+Bug fix for handling escape sequences in strings
