@@ -28,6 +28,7 @@ package com.justone.json;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 /**
  * A JSON scalar element (null, boolean, number or string)
@@ -215,6 +216,22 @@ public class ScalarElement extends Element {
   }//hasIndex()
 
   /**
+   * Always returns false
+   * @param aPattern key pattern to verify
+   * @return always returns false
+   */
+  @Override
+  public boolean hasPattern(Pattern aPattern) {
+    
+    assert aPattern!=null;//assert pattern is defined
+    
+    assert fScalar!=null;
+    
+    return false;//not an object
+    
+  }//hasPattern()
+
+  /**
    * Always returns null
    * @param aKey key to retrieve by
    * @return always returns null
@@ -227,7 +244,7 @@ public class ScalarElement extends Element {
     
     return null;//not an object
     
-  }//getElement()
+  }//getChildElement()
   
   /**
    * Always returns null
@@ -242,8 +259,23 @@ public class ScalarElement extends Element {
     
     return null;//not an array
     
-  }//getElement()
+  }//getChildElement()
   
+  /**
+   * Always returns null
+   * @param aPattern key pattern to retrieve by
+   * @return always returns null
+   */
+  @Override
+  public Element getChildElement(Pattern aPattern) {
+    
+    assert aPattern!=null;
+    assert fScalar!=null;
+    
+    return null;//not an array
+    
+  }//getChildElement()
+
   /**
    * Always returns null
    * @return always returns null

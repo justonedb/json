@@ -26,6 +26,7 @@ package com.justone.json;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 /**
@@ -263,6 +264,33 @@ public class ArrayElementTest extends TestCase {
   }//testHasIndex()
 
   /**
+   * Test of hasKey method, of class ArrayElement.
+   */
+  public void testHasPattern() {
+    
+    System.out.println("hasPattern");
+    
+    ArrayElement instance = new ArrayElement();
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+
+    instance.addElement(new ScalarElement());
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+  
+    instance.addElement(new ScalarElement(false));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+  
+    instance.addElement(new ScalarElement(1));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+    
+    instance.addElement(new ScalarElement(1.0));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+    
+    instance.addElement(new ScalarElement("string"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+
+  }//testHasPattern()
+    
+  /**
    * Test of getElement method, of class ArrayElement.
    */
   public void testGetChildElement_String() {
@@ -307,6 +335,22 @@ public class ArrayElementTest extends TestCase {
             
   }//testGetElement_Integer()
 
+  /**
+   * Test of getElement method, of class ArrayElement.
+   */
+  public void testGetChildElement_Pattern() {
+    
+    System.out.println("getChildElement");
+    
+    ArrayElement instance = new ArrayElement();
+    assertEquals(null, instance.getChildElement(Pattern.compile("a")));
+
+    instance.addElement(new ScalarElement());
+    assertEquals(null, instance.getChildElement(Pattern.compile("a")));
+    
+  }//testGetElement_Pattern()
+  
+  
   /**
    * Test of getChildElements method, of class ArrayElement.
    */

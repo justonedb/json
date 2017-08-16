@@ -26,6 +26,7 @@ package com.justone.json;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 /**
@@ -205,6 +206,26 @@ public class ObjectElementTest extends TestCase {
   }//testHasIndex()
 
   /**
+   * Test of hasPattern method, of class ObjectElement.
+   */
+  public void testHasPattern() {
+    
+    System.out.println("hasPattern");
+
+    ObjectElement instance = new ObjectElement();
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+
+    instance.putElement("a", new ScalarElement());
+    assertEquals(true, instance.hasPattern(Pattern.compile("a")));
+    assertEquals(true, instance.hasPattern(Pattern.compile(".")));
+    assertEquals(true, instance.hasPattern(Pattern.compile("[a]+")));
+    assertEquals(true, instance.hasPattern(Pattern.compile("[a]*")));
+    assertEquals(false, instance.hasPattern(Pattern.compile("b")));
+
+  }//testHasPattern()
+  
+  
+  /**
    * Test of getElement method, of class ObjectElement.
    */
   public void testGetChildElement_String() {
@@ -239,6 +260,32 @@ public class ObjectElementTest extends TestCase {
   
   }//testGetElement_Integer()
 
+  /**
+   * Test of getElement method, of class ObjectElement.
+   */
+  public void testGetChildElement_Pattern() {
+    
+    System.out.println("getChildElement");
+    
+    ObjectElement instance = new ObjectElement();
+    assertEquals(null, instance.getChildElement("a"));
+    
+    Element nullElement=new ScalarElement();
+    instance.putElement("a", nullElement);
+    assertEquals(nullElement, instance.getChildElement(Pattern.compile("a")));
+    assertEquals(nullElement, instance.getChildElement(Pattern.compile(".")));
+    assertEquals(nullElement, instance.getChildElement(Pattern.compile("[a]+")));
+    assertEquals(nullElement, instance.getChildElement(Pattern.compile("[a]*")));
+        
+    Element booleanElement=new ScalarElement(false);
+    instance.putElement("b", booleanElement);
+    assertEquals(booleanElement, instance.getChildElement(Pattern.compile("b")));
+    assertEquals(booleanElement, instance.getChildElement(Pattern.compile("[b]+")));
+    assertEquals(booleanElement, instance.getChildElement(Pattern.compile("[b]*")));
+
+  }//testGetElement_String()
+  
+  
   /**
    * Test of getChildElements method, of class ObjectElement.
    */

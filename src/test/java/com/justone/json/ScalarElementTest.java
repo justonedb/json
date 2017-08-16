@@ -26,6 +26,7 @@ package com.justone.json;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 import junit.framework.TestCase;
 
 /**
@@ -179,6 +180,7 @@ public class ScalarElementTest extends TestCase {
     
   }//testHasKey()
 
+  
   /**
    * Test of hasIndex method, of class ScalarElement.
    */
@@ -207,59 +209,32 @@ public class ScalarElementTest extends TestCase {
   }//testHasIndex()
 
   /**
-   * Test of getElement method, of class ScalarElement.
+   * Test of hasPattern method, of class ScalarElement.
    */
-  public void testGetElement_String() {
+  public void testHasPattern() {
     
-    System.out.println("getElement");
+    System.out.println("hasPattern");
     
     ScalarElement instance = new ScalarElement();
-    assertEquals(null, instance.getChildElement("a"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
 
     instance = new ScalarElement(false);
-    assertEquals(null, instance.getChildElement("a"));
- 
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
+
     instance = new ScalarElement(1);
-    assertEquals(null,instance.getChildElement("a"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
   
     instance = new ScalarElement(1.0);
-    assertEquals(null,instance.getChildElement("a"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
 
     instance = new ScalarElement("string");
-    assertEquals(null,instance.getChildElement("a"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
     
     instance = new ScalarElement(Element.STRING,"string");
-    assertEquals(null,instance.getChildElement("a"));
+    assertEquals(false, instance.hasPattern(Pattern.compile("a")));
     
-  }//testGetElement_String()
-
-  /**
-   * Test of getElement method, of class ScalarElement.
-   */
-  public void testGetElement_Integer() {
-    
-    System.out.println("getElement");
-        
-    ScalarElement instance = new ScalarElement();
-    assertEquals(null, instance.getChildElement(0));
-
-    instance = new ScalarElement(false);
-    assertEquals(null, instance.getChildElement(0));
-    
-    instance = new ScalarElement(1);
-    assertEquals(null, instance.getChildElement(0));
-
-    instance = new ScalarElement(1.0);
-    assertEquals(null, instance.getChildElement(0));
-   
-    instance = new ScalarElement("string");
-    assertEquals(null, instance.getChildElement(0));
-    
-    instance = new ScalarElement(Element.STRING,"string");
-    assertEquals(null, instance.getChildElement(0));
-    
-  }//testGetElement_Integer()
-  
+  }//testHasPattern()  
+      
   /**
    * Test of getChildElements method, of class ScalarElement.
    */
@@ -313,6 +288,21 @@ public class ScalarElementTest extends TestCase {
     
     ScalarElement instance = new ScalarElement();
     assertNull(instance.getChildElement("a"));
+
+    instance = new ScalarElement(false);
+    assertEquals(null, instance.getChildElement("a"));
+ 
+    instance = new ScalarElement(1);
+    assertEquals(null,instance.getChildElement("a"));
+  
+    instance = new ScalarElement(1.0);
+    assertEquals(null,instance.getChildElement("a"));
+
+    instance = new ScalarElement("string");
+    assertEquals(null,instance.getChildElement("a"));
+    
+    instance = new ScalarElement(Element.STRING,"string");
+    assertEquals(null,instance.getChildElement("a"));
     
   }//testGetChildElement_String()
 
@@ -325,6 +315,49 @@ public class ScalarElementTest extends TestCase {
     ScalarElement instance = new ScalarElement();
     assertNull(instance.getChildElement(0));
     
+    instance = new ScalarElement(false);
+    assertEquals(null, instance.getChildElement(0));
+    
+    instance = new ScalarElement(1);
+    assertEquals(null, instance.getChildElement(0));
+
+    instance = new ScalarElement(1.0);
+    assertEquals(null, instance.getChildElement(0));
+   
+    instance = new ScalarElement("string");
+    assertEquals(null, instance.getChildElement(0));
+    
+    instance = new ScalarElement(Element.STRING,"string");
+    assertEquals(null, instance.getChildElement(0));    
+    
+    
   }//testGetChildElement_Integer()
+
+  /**
+   * Test of getChildElement method, of class ScalarElement.
+   */
+  public void testGetChildElement_Pattern() {
+    
+    System.out.println("getChildElement");
+    
+    ScalarElement instance = new ScalarElement();
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+
+    instance = new ScalarElement(false);
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+ 
+    instance = new ScalarElement(1);
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+  
+    instance = new ScalarElement(1.0);
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+
+    instance = new ScalarElement("string");
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+    
+    instance = new ScalarElement(Element.STRING,"string");
+    assertNull(instance.getChildElement(Pattern.compile("a")));
+        
+  }//testGetChildElement_Pattern()
 
 }//ScalarElementTest{}

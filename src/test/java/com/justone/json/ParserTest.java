@@ -70,7 +70,7 @@ public class ParserTest extends TestCase {
     instance.parse("[null,false,1,1.0,\"string\"]");
     
     instance.parse("[{\"a\":null},{\"a\":null}]");
-    
+
     instance.parse("{\"a\":\"\\\\\"}");// backsslash escape
     instance.parse("{\"a\":\"\\\"\"}");// quote escape
     instance.parse("{\"a\":\"\\/\"}");// solidus escape
@@ -80,7 +80,8 @@ public class ParserTest extends TestCase {
     instance.parse("{\"a\":\"\\r\"}");// carriage return escape
     instance.parse("{\"a\":\"\\t\"}");// tab escape
     instance.parse("{\"a\":\"\\u0000\"}");// hexadecimal escape
-
+    
+    
   }//testParse()
 
   /**
@@ -196,6 +197,20 @@ public class ParserTest extends TestCase {
     assertEquals(false, instance.contains(new Path("/@a/#1")));
     assertEquals(false, instance.contains(new Path("/#1")));
     
+    instance.parse("{\"a\":null}");    
+    assertEquals(true, instance.contains(new Path("/?a")));
+    assertEquals(false, instance.contains(new Path("/?b")));
+
+    instance.parse("{\"a\":null,\"b\":null}");
+    assertEquals(true, instance.contains(new Path("/?a")));
+    assertEquals(true, instance.contains(new Path("/?b")));
+    assertEquals(false, instance.contains(new Path("/?a/?b")));
+
+    instance.parse("{\"a\":{\"b\":null}}");
+    assertEquals(true, instance.contains(new Path("/?a")));
+    assertEquals(false, instance.contains(new Path("/?b")));
+    assertEquals(true, instance.contains(new Path("/?a/?b")));
+    
   }//testContains()
 
   /**
@@ -208,15 +223,21 @@ public class ParserTest extends TestCase {
     Parser instance = new Parser();
     instance.parse("{}");
     assertEquals(false, instance.containsAll(new Path[]{new Path("/@a")}));
+    assertEquals(false, instance.containsAll(new Path[]{new Path("/?a")}));
 
     instance.parse("{\"a\":null}");
     assertEquals(true, instance.containsAll(new Path[]{new Path("/@a")}));
+    assertEquals(true, instance.containsAll(new Path[]{new Path("/?a")}));
     assertEquals(false, instance.containsAll(new Path[]{new Path("/@a"),new Path("/@b")}));
+    assertEquals(false, instance.containsAll(new Path[]{new Path("/?a"),new Path("/?b")}));
 
     instance.parse("{\"a\":null,\"b\":null}");
     assertEquals(true, instance.containsAll(new Path[]{new Path("/@a")}));
+    assertEquals(true, instance.containsAll(new Path[]{new Path("/?a")}));
     assertEquals(true, instance.containsAll(new Path[]{new Path("/@a"),new Path("/@b")}));
+    assertEquals(true, instance.containsAll(new Path[]{new Path("/?a"),new Path("/?b")}));
     assertEquals(false, instance.containsAll(new Path[]{new Path("/@a"),new Path("/@b"),new Path("/@c")}));
+    assertEquals(false, instance.containsAll(new Path[]{new Path("/?a"),new Path("/?b"),new Path("/?c")}));
     
   }//testContainsAll()
 
@@ -230,18 +251,27 @@ public class ParserTest extends TestCase {
     Parser instance = new Parser();
     instance.parse("{}");
     assertEquals(false, instance.containsAny(new Path[]{new Path("/@a")}));
+    assertEquals(false, instance.containsAny(new Path[]{new Path("/?a")}));
 
     instance.parse("{\"a\":null}");
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@a")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?a")}));
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@a"),new Path("/@b")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?a"),new Path("/?b")}));
     assertEquals(false, instance.containsAny(new Path[]{new Path("/@b")}));
+    assertEquals(false, instance.containsAny(new Path[]{new Path("/?b")}));
 
     instance.parse("{\"a\":null,\"b\":null}");
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@a")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?a")}));
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@b")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?b")}));
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@a"),new Path("/@b")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?a"),new Path("/?b")}));
     assertEquals(true, instance.containsAny(new Path[]{new Path("/@a"),new Path("/@b"),new Path("/@c")}));
+    assertEquals(true, instance.containsAny(new Path[]{new Path("/?a"),new Path("/?b"),new Path("/?c")}));
     assertEquals(false, instance.containsAny(new Path[]{new Path("/@c")}));
+    assertEquals(false, instance.containsAny(new Path[]{new Path("/?c")}));
     
   }//testContainsAny()  
   
@@ -292,7 +322,21 @@ public class ParserTest extends TestCase {
     assertNull(instance.getElement(new Path("/@key1")));
     assertNull(instance.getElement(new Path("/@key2")));
 
+    instance.parse("{\"a\":null}");
+    assertEquals("{\"a\":null}", instance.getElement(new Path("/")).toString());
     
+    instance.parse("{\"a\":\"string\"}");
+    assertEquals("\"string\"", instance.getElement(new Path("/?a")).toString());
+    assertEquals("\"string\"", instance.getElement(new Path("/?.")).toString());
+    assertNull(instance.getElement(new Path("/?b")));
+
+    instance.parse("{\"key\":\"string\"}");
+    assertEquals("{\"key\":\"string\"}", instance.getElement(new Path("/")).toString());
+    assertEquals("\"string\"", instance.getElement(new Path("/?.*")).toString());
+    assertNull(instance.getElement(new Path("/?.*/@b")));
+
+  
+  
   }//testGetElement()
     
 }//ParserTest{}

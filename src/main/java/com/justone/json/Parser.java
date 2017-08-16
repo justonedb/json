@@ -175,11 +175,13 @@ public class Parser {
     for (int i=0;i<aPath.fDepth;++i) {//for each level
       if (aPath.fKeys[i]!=null) {//if object key
         element=element.getChildElement(aPath.fKeys[i]);//get element for object key
+      } else if (aPath.fPatterns[i]!=null) {//if pattern key
+        element=element.getChildElement(aPath.fPatterns[i]);//get element for key pattern                
       } else {//else array index
         element=element.getChildElement(aPath.fIndexes[i]);//get element for array index
       }//if object key
       if (element==null) return false;//if element not found then return false        
-    }//for each key
+    }//for each level
     
     return true;//path found
     
@@ -232,11 +234,17 @@ public class Parser {
     assert aPath!=null;
     assert iRootElement!=null;
     
+    if (aPath.fDepth==0) {//if root path
+      return iRootElement;//return root element
+    }//if root path
+    
     Element element=iRootElement;//start at root element
     for (int i=0;i<aPath.fDepth;++i) {//for each level
       if (aPath.fKeys[i]!=null) {//if object key
         element=element.getChildElement(aPath.fKeys[i]);//get element for object key
-      } else {//else array index
+      } else if (aPath.fPatterns[i]!=null) {//else array index
+        element=element.getChildElement(aPath.fPatterns[i]);//get element for pattern
+      } else {
         element=element.getChildElement(aPath.fIndexes[i]);//get element for array index
       }//if object key
       if (element==null) return null;//return null if path does not exist
@@ -324,7 +332,7 @@ public class Parser {
    * Parses a string from the message
    * @return string parsed
    */
-    private String parseString () {
+  private String parseString () {
     
     assert iMessage!=null;
     assert iIndex>=0;
@@ -348,7 +356,7 @@ public class Parser {
     
     return fBuffer.toString();//return string in buffer
     
-  }//parseString()
+  }//parseString()  
 
   /**
    * Parses a number from the message
@@ -559,5 +567,5 @@ public class Parser {
     return object;//happy days
     
   }//parseObject() 
-  
+   
 }//Parse{}

@@ -64,6 +64,21 @@ public class PathTest extends TestCase {
     instance = new Path("\\@a\\@b");
     assertEquals("\\@a\\@b", instance.toString());
   
+    instance = new Path("/#1");
+    assertEquals("/#1", instance.toString());
+
+    instance = new Path("/#1/#2");
+    assertEquals("/#1/#2", instance.toString());
+
+    instance = new Path("/?.");
+    assertEquals("/?.", instance.toString());
+
+    instance = new Path("/?./?.*");
+    assertEquals("/?./?.*", instance.toString());
+
+    instance = new Path("/");
+    assertEquals("/", instance.toString());
+        
   }//testToString()
   
   /**

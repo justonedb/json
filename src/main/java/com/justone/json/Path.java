@@ -26,6 +26,9 @@ SOFTWARE.
 
 package com.justone.json;
 
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 /**
  * A JSON navigation path.
  * <P>
@@ -57,6 +60,10 @@ public class Path {
    */
   public static final char INDEX='#';
   /**
+   * Prefix character for regular expression tag
+   */
+  public static final char PATTERN='?';
+  /**
    * Tag separator character
    */
   protected final char fSeparator;
@@ -72,6 +79,10 @@ public class Path {
    * Array index at each tag level
    */
   protected final int[] fIndexes;
+  /**
+   * Regular expressions at each tag level
+   */
+  protected final Pattern[] fPatterns;
   
   /**
    * Path constructor   
@@ -82,24 +93,42 @@ public class Path {
     
     assert aString!=null;
 
+    if (aString.length()==1) {//if root path
+      fSeparator=aString.charAt(0);//set leading character as tag separator
+      fDepth=0;//path is root
+      fKeys=null;//no key tags
+      fIndexes=null;//no index tags
+      fPatterns=null;//no pattern tags
+      return;
+    }//if root path
+    
     if (aString.length()<2) throw new RuntimeException("Empty path : "+aString);//empty path
     
     fSeparator=aString.charAt(0);//extract leading character as tag separator
+    
     String[] tags=aString.substring(1).split("\\"+fSeparator,-1);//split path into array of tags
     fDepth=tags.length;//set tag depth
     fKeys=new String[fDepth];//allocate array for key tags
     fIndexes=new int[fDepth];//allocate array for index tags
+    fPatterns=new Pattern[fDepth];//allocate array for pattern tags
     for (int i=0;i<fDepth;++i) {//for each tag
-      if (tags[i].trim().length()<2) throw new RuntimeException("Bad tag : "+aString+" ["+i+"]");//bad key tag
+      if (tags[i].trim().length()<2) throw new RuntimeException("Bad key tag : "+aString+" ["+i+"]");//bad key tag
       if (tags[i].charAt(0)==KEY) {//if object key tag
         fKeys[i]=tags[i].substring(1);//set key tag after removing @ prefix
         assert fKeys[i]!=null;
       } else if (tags[i].charAt(0)==INDEX) {//else if array index tag
         for (int j=1;j<tags[i].length();++j) {//for each subsequent character
-          if ("0123456789".indexOf(tags[i].charAt(j))<0) throw new RuntimeException("Bad tag : "+aString+" ["+i+"]");//bad index tag
+          if ("0123456789".indexOf(tags[i].charAt(j))<0) throw new RuntimeException("Bad index tag : "+aString+" ["+i+"]");//bad index tag
         }//for each subsequent character
         fIndexes[i]=Integer.parseInt(tags[i].substring(1));//set array index after removing # tag
         assert fIndexes[i]>=0;
+      } else if (tags[i].charAt(0)==PATTERN) {//else if pattern tag
+        try {
+        fPatterns[i]=Pattern.compile(tags[i].substring(1));//compile pattern after removing ? tag
+        } catch (PatternSyntaxException exception) {
+          throw new RuntimeException("Bad pattern tag : "+aString+" ["+i+"] : "+exception.getMessage());//bad pattern tag
+        }
+        assert fPatterns[i]!=null;
       } else {//else bad prefix
         throw new RuntimeException("Bad tag : "+aString+" ["+i+"]");//bad tag prefix
       }//if object key tag
@@ -114,9 +143,13 @@ public class Path {
   @Override
   public String toString() {
     
-    assert fDepth>0;
+    assert fDepth>=0;
    
     StringBuilder buffer=new StringBuilder();//create buffer for string manipulation
+    
+    if (fDepth==0) {//if root path
+      return String.valueOf(fSeparator);
+    }//if root path
     
     for (int i=0;i<fDepth;++i) {//for each tag
       
@@ -124,7 +157,10 @@ public class Path {
       if (fKeys[i]!=null) {//if object key
         buffer.append(KEY);//append object key prefix
         buffer.append(fKeys[i]);//append key
-      } else {//else array index
+      } else if (fPatterns[i]!=null){//if pattern
+        buffer.append(PATTERN);//append pattern prefix
+        buffer.append(fPatterns[i].toString());//append pattern string
+      } else {//else index
         buffer.append(INDEX);//append array index prefix
         buffer.append(fIndexes[i]);//append index    
       }//if object key

@@ -29,7 +29,10 @@ package com.justone.json;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Pattern;
 
 /**
  * A JSON object element
@@ -64,7 +67,17 @@ public class ObjectElement extends Element {
     
     assert aObject!=null;
     fObject=aObject;//set object
-    
+     
+    Iterator entries = fObject.entrySet().iterator();
+    while (entries.hasNext()) {//for each element in the map
+      Entry entry = (Entry) entries.next();//get next map entry
+      String key = (String)entry.getKey();//get entry key
+      Element element = (Element)entry.getValue();//get entry value
+      element.iKey=key;//set element key
+      element.iParent=this;//assign parent
+      element.iIndex=-1;//no element index
+    }//for each element in the map
+       
   }//ObjectElement()
   
   /**
@@ -82,7 +95,7 @@ public class ObjectElement extends Element {
     aElement.iParent=this;//assign parent
     aElement.iKey=aKey;//set element key
     aElement.iIndex=-1;//no element index
-    
+        
   }//putElement{}
 
   /**
@@ -199,6 +212,29 @@ public class ObjectElement extends Element {
   }//hasIndex()
   
   /**
+   * Indicates if object contains the key
+   * @param aPattern key pattern to verify
+   * @return true if key is known in this object
+   */
+  @Override
+  public boolean hasPattern(Pattern aPattern) {
+    
+    assert aPattern!=null;
+    assert fObject!=null;
+    
+    Iterator iterator=getKeyIterator();//get iterator for all child keys
+    while (iterator.hasNext()) {//for all child keys
+      String key=(String)iterator.next();//get next child key
+      if (aPattern.matcher(key).matches()) {//if child key matches the pattern
+        return true;//we have a match
+      }//if child key matches the pattern
+    }//for all child keys
+    
+    return false;//no match found
+    
+  }//hasPattern()
+
+  /**
    * Returns the parsed element associated with the key
    * @param aKey key to retrieve by
    * @return 
@@ -206,11 +242,12 @@ public class ObjectElement extends Element {
   @Override
   public Element getChildElement(String aKey) {
     
+    assert aKey!=null;    
     assert fObject!=null;
     
     return fObject.get(aKey);//get element from map
     
-  }//getElement()
+  }//getChildElement()
   
   /**
    * Always returns null
@@ -225,7 +262,31 @@ public class ObjectElement extends Element {
     
     return null;//not an array
     
-  }//getElement()
+  }//getChildElement()
+  
+  /**
+   * Returns the parsed element associated with the key pattern
+   * @param aPattern key pattern to retrieve by
+   * @return 
+   */
+  @Override
+  public Element getChildElement(Pattern aPattern) {
+    
+    assert aPattern!=null;    
+    assert fObject!=null;
+    
+    Iterator iterator=getChildElements();//get iterator for all child elements
+    while (iterator.hasNext()) {//for all child elements
+      Element element=(Element)iterator.next();//get next child element
+            
+      if ((element.iKey!=null)&&(aPattern.matcher(element.iKey).matches())) {//if child key matches the pattern
+        return element;//we have found a matching child
+      }//if child key matches the pattern
+    }//for all child elements
+    
+    return null;//no match found
+    
+  }//getChildElement()
   
   /**
    * Returns an iterator for the child elements

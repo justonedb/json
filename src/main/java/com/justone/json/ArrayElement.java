@@ -27,6 +27,7 @@ SOFTWARE.
 package com.justone.json;
 
 import java.util.*;
+import java.util.regex.Pattern;
 /**
  * A JSON array element
  * @author Duncan Pauly
@@ -58,6 +59,16 @@ public class ArrayElement extends Element {
     assert aArray!=null;
     
     fArray=aArray;//set linked list
+
+    Iterator iterator=fArray.iterator();
+    int index=0;
+    while (iterator.hasNext()) {//for each element
+      ++index;
+      Element element=(Element)iterator.next();
+      element.iParent=this;//assign parent
+      element.iIndex=index;//set element index
+      element.iKey=null;//no element key
+    }//for each element
     
   }//ArrayElement{}
   
@@ -183,6 +194,21 @@ public class ArrayElement extends Element {
   }//hasIndex()
 
   /**
+   * Always returns false
+   * @param aPattern key pattern to verify
+   * @return always returns false
+   */
+  @Override
+  public boolean hasPattern(Pattern aPattern) {
+    
+    assert aPattern!=null;
+    assert fArray!=null;
+    
+    return false;//array has no keys
+    
+  }//hasPattern()
+
+  /**
    * Always returns null
    * @param aKey key to retrieve by
    * @return always returns null
@@ -195,7 +221,7 @@ public class ArrayElement extends Element {
     
     return null;//array has no keys
     
-  }//getElement()
+  }//getChildElement()
 
   /**
    * Returns element at array index
@@ -211,7 +237,22 @@ public class ArrayElement extends Element {
     if (aIndex>=fArray.size()) return null;//if index beyond last element
     return fArray.get(aIndex);//return element
     
-  }//getElement()
+  }//getChildElement()
+
+  /**
+   * Always returns null
+   * @param aPattern key pattern to retrieve by
+   * @return always returns null
+   */
+  @Override
+  public Element getChildElement(Pattern aPattern) {
+    
+    assert aPattern!=null;
+    assert fArray!=null;
+    
+    return null;//array has no keys
+    
+  }//getChildElement()
 
   /**
    * Returns an iterator for elements in the array

@@ -28,6 +28,7 @@ package com.justone.json;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
 /**
  * Abstract JSON element
@@ -176,6 +177,13 @@ public abstract class Element {
   public abstract boolean hasIndex(Integer aIndex);
   
   /**
+   * Indicates if there is a child element with a given key pattern
+   * @param aPattern key pattern of the child element
+   * @return true if there is a child element with the given key pattern
+   */
+  public abstract boolean hasPattern(Pattern aPattern);
+
+  /**
    * Returns the immediate child element with a given key
    * @param aKey key of the child element
    * @return child element with the key or null if none 
@@ -189,6 +197,13 @@ public abstract class Element {
    */
   public abstract Element getChildElement(Integer aIndex);
   
+  /**
+   * Returns the first immediate child element with the given key pattern
+   * @param aPattern pattern of the child element
+   * @return first child element with the given pattern or null if none
+   */
+  public abstract Element getChildElement(Pattern aPattern);
+
   /**
    * Returns an iterator of immediate child elements
    * @return iterator for child elements
